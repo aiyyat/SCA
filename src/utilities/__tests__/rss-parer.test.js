@@ -1,6 +1,7 @@
 const { getRSSFeed, getRSSFeedFiltered, getRSSFeedFormatted } = require('../rss-parser');
 const moment = require('moment');
 const { months } = require('moment');
+const result = mock();
 
 // we would be using a mock - like here - https://pawelgrzybek.com/mocking-functions-and-modules-with-jest/#function-mock-using-jestfn
 // to mock the return value, if it were not a test.
