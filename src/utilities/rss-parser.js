@@ -11,16 +11,20 @@ function getRSSFeed(rss_url) {
     }
 }
 
-async function getFormattedFeeds(rss_url, sort = 'dsc', n = 10) {
+async function getRSSFeedFiltered(rss_url, sort = 'dsc', n = 10) {
     const direction = sort === 'asc' ? -1 : 1;
     const { items } = await getRSSFeed(rss_url);
-    return items.sort((a, b) => direction * ((pubDateOf(a) < pubDateOf(b)) ? 1 : -1))
-    .slice(0, n)
-    .map(item => {
-        const {title, enclosure,isoDate} = item;
+    return items
+        .sort((a, b) => direction * ((pubDateOf(a) < pubDateOf(b)) ? 1 : -1))
+        .slice(0, n);
+}
+
+async function getRSSFeedFormatted(rss_url, sort, n) {
+    return (await getRSSFeedFiltered(rss_url, sort, n)).map(item => {
+        const { title, enclosure, isoDate } = item;
         const audioUrl = enclosure.url;
         const publishedDate = convertISODateToAEST(isoDate);
-        return {title, audioUrl,publishedDate};
+        return { title, audioUrl, publishedDate };
     });
 }
 
@@ -28,4 +32,4 @@ function pubDateOf(item) {
     return new Date(item.isoDate);
 }
 
-module.exports = { getRSSFeed, getFirstNRSSFeed: getFormattedFeeds }
+module.exports = { getRSSFeed, getRSSFeedFiltered, getRSSFeedFormatted }
