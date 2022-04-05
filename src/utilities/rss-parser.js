@@ -7,16 +7,24 @@ function getRSSFeed(rss_url) {
     try {
         return parser.parseURL(rss_url);
     } catch (error) {
-        console.log('Error:', error.message)
+        throw {
+            message: 'Unable to read From Feed.'
+        }
     }
 }
 
 async function getRSSFeedFiltered(rss_url, sort = 'dsc', n = 10) {
-    const direction = sort === 'asc' ? -1 : 1;
-    const { items } = await getRSSFeed(rss_url);
-    return items
-        .sort((a, b) => direction * ((pubDateOf(a) < pubDateOf(b)) ? 1 : -1))
-        .slice(0, n);
+    try {
+        const direction = sort === 'asc' ? -1 : 1;
+        const { items } = await getRSSFeed(rss_url);
+        return items
+            .sort((a, b) => direction * ((pubDateOf(a) < pubDateOf(b)) ? 1 : -1))
+            .slice(0, n);
+    } catch (error) {
+        throw {
+            message: 'Unable to process data read from From Feed.'
+        }
+    }
 }
 
 async function getRSSFeedFormatted(rss_url, sort, n) {
